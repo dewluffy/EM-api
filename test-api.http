@@ -1,0 +1,129 @@
+# filename : test-api.http
+GET http://localhost:8899/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjU0OTEzLCJleHAiOjE3NTM5NTA5MTN9.teq5kVEMnomfftsOWg7J0nQMF5CUQtcyBuK-heaatKI
+###
+PATCH  http://localhost:8899/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjU0OTEzLCJleHAiOjE3NTM5NTA5MTN9.teq5kVEMnomfftsOWg7J0nQMF5CUQtcyBuK-heaatKI
+
+{
+  "firstName": "Monkey",
+  "lastName": "Luffy",
+  "mobile": "0812345686",
+  "department": "Straw Hat Pirates"
+}
+
+###
+POST http://localhost:8899/api/auth/login HTTP/1.1
+content-type: application/json
+
+{
+ "email" : "dew@river.com",
+ "password" : "123456"
+}
+
+###
+POST http://localhost:8899/api/auth/register HTTP/1.1
+content-type: application/json
+
+{
+ "email" : "dew3@river.com",
+ "firstName" : "dew3",
+ "lastName" : "river",
+ "password" : "123456",
+ "confirmPassword" : "123456"
+}
+
+###
+GET http://localhost:8899/api/admin/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjc5MTkyLCJleHAiOjE3NTM5NzUxOTJ9.wnb4rpRuQz2UJ8LF7vSmIbz26vCkXqwnoMRWRq7LxMs
+
+###
+GET http://localhost:8899/api/admin/users/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjU1MDQzLCJleHAiOjE3NTM5NTEwNDN9.XDsHfDrgM0G-MK_iriJYvMm_xSi7AUQJxfnYCHjFlls
+
+###
+PATCH  http://localhost:8899/api/admin/users/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjU1MDQzLCJleHAiOjE3NTM5NTEwNDN9.XDsHfDrgM0G-MK_iriJYvMm_xSi7AUQJxfnYCHjFlls
+content-type: application/json
+
+{
+  "firstName": "dew",
+  "lastName": "Luffy",
+  "mobile": "0812345779",
+  "department": "Straw Hat Pirates"
+}
+
+###
+DELETE  http://localhost:8899/api/admin/users/9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjU1MDQzLCJleHAiOjE3NTM5NTEwNDN9.XDsHfDrgM0G-MK_iriJYvMm_xSi7AUQJxfnYCHjFlls
+
+###
+POST http://localhost:8899/api/attendance/checkin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzUyNjU2NDkxLCJleHAiOjE3NTM5NTI0OTF9.uFl4DoOweACaXoHr8gYnEMG7cWlFb2T9A8OfVUVViso
+content-type: application/json
+
+{
+  "location": "River"
+}
+###
+POST http://localhost:8899/api/attendance/checkout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzUyMTY2MzU4LCJleHAiOjE3NTM0NjIzNTh9.R3v-G7xJdZUmsJTBW6icQGMO1DL2uihxyWODedXS7Rc
+content-type: application/json
+
+{
+  "location": "River"
+}
+###
+GET http://localhost:8899/api/holiday/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjU1NjQ0LCJleHAiOjE3NTM5NTE2NDR9.hKyIWBQ3xok4OrCpDOG0ZPzW2f9TsL-6XczzbvgS_JY
+
+###
+GET http://localhost:8899/api/attendance/admin/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNTUwOTM3LCJleHAiOjE3NTM4NDY5Mzd9.xzIqT7NBr0FuVBsng6hc2tT2PcjM41MDTE9w7Hh1daw
+
+###
+PATCH  http://localhost:8899/api/attendance/admin/7
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNTUwOTM3LCJleHAiOjE3NTM4NDY5Mzd9.xzIqT7NBr0FuVBsng6hc2tT2PcjM41MDTE9w7Hh1daw
+content-type: application/json
+
+{
+  "checkIn": "2025-07-15T09:00:00.000Z",
+  "checkOut": "2025-07-15T17:45:00.000Z",
+  "location": "RNC",
+  "isLate": false
+}
+###
+DELETE  http://localhost:8899/api/attendance/admin/7
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNTUwOTM3LCJleHAiOjE3NTM4NDY5Mzd9.xzIqT7NBr0FuVBsng6hc2tT2PcjM41MDTE9w7Hh1daw
+
+###
+POST   http://localhost:8899/api/leave
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNTUwOTM3LCJleHAiOjE3NTM4NDY5Mzd9.xzIqT7NBr0FuVBsng6hc2tT2PcjM41MDTE9w7Hh1daw
+content-type: application/json
+
+{
+  "leaveTypeId": 1,
+  "startDate": "2025-11-01",
+  "endDate": "2025-11-03"
+}
+###
+GET   http://localhost:8899/api/leave
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNTUwOTM3LCJleHAiOjE3NTM4NDY5Mzd9.xzIqT7NBr0FuVBsng6hc2tT2PcjM41MDTE9w7Hh1daw
+
+###
+GET   http://localhost:8899/api/leave/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNTUwOTM3LCJleHAiOjE3NTM4NDY5Mzd9.xzIqT7NBr0FuVBsng6hc2tT2PcjM41MDTE9w7Hh1daw
+
+###
+PATCH   http://localhost:8899/api/leave/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNTUwOTM3LCJleHAiOjE3NTM4NDY5Mzd9.xzIqT7NBr0FuVBsng6hc2tT2PcjM41MDTE9w7Hh1daw
+content-type: application/json
+
+{
+  "endDate": "2025-11-04"
+}
+###
+PATCH   http://localhost:8899/api/leave/1/approve
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNTUwOTM3LCJleHAiOjE3NTM4NDY5Mzd9.xzIqT7NBr0FuVBsng6hc2tT2PcjM41MDTE9w7Hh1daw
+
+###

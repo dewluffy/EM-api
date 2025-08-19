@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id           Int            @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  position     String?
+  department   String?
+  startDate    DateTime       @default(now()) @db.Timestamp(0)
+  mobile       String?        @unique
+  email        String?        @unique
+  password     String
+  profileImage String?
+  coverImage   String?
+  createdAt    DateTime       @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime       @updatedAt @db.Timestamp(0)
+  role         Role           @default(USER)
+  Attendance   Attendance[]
+  leaves       Leave[]        @relation("employeeLeaves")
+  approvals    Leave[]        @relation("approverLeaves")
+  LeaveBalance LeaveBalance[]
+  refreshToken RefreshToken[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum LeaveStatus {
+  pending
+  approved
+  rejected
+}
+
+model Attendance {
+  id         Int       @id @default(autoincrement())
+  date       DateTime  @db.Date
+  checkIn    DateTime?
+  checkOut   DateTime?
+  location   String?
+  isLate     Boolean   @default(false)
+  employeeId Int
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+
+  @@unique([employeeId, date])
+}
+
+model Holiday {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @unique
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LeaveType {
+  id           Int            @id @default(autoincrement())
+  name         String
+  maxDays      Int
+  leaves       Leave[]
+  LeaveBalance LeaveBalance[]
+}
+
+model Leave {
+  id           Int         @id @default(autoincrement())
+  leaveTypeId  Int
+  employeeId   Int
+  startDate    DateTime
+  endDate      DateTime
+  status       LeaveStatus @default(pending)
+  approvedBy   Int?
+  rejectReason String?
+  leaveType    LeaveType   @relation(fields: [leaveTypeId], references: [id])
+  employee     Employee    @relation("employeeLeaves", fields: [employeeId], references: [id])
+  approver     Employee?   @relation("approverLeaves", fields: [approvedBy], references: [id])
+
+  @@index([leaveTypeId])
+  @@index([employeeId])
+  @@index([approvedBy])
+}
+
+model LeaveBalance {
+  id          Int       @id @default(autoincrement())
+  employeeId  Int
+  leaveTypeId Int
+  usedDays    Int       @default(0)
+  employee    Employee  @relation(fields: [employeeId], references: [id])
+  leaveType   LeaveType @relation(fields: [leaveTypeId], references: [id])
+
+  @@unique([employeeId, leaveTypeId])
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      Employee @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+}
