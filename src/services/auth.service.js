@@ -55,25 +55,25 @@ export async function loginService(email, password) {
   const accessToken = jwt.sign(
     { id: foundUser.id },
     process.env.JWT_SECRET,
-    { algorithm: 'HS256', expiresIn: '20s' }
+    { algorithm: 'HS256', expiresIn: '15d' }
   )
-    const refreshToken = jwt.sign(
-    { id: foundUser.id },
-    process.env.REFRESH_SECRET || 'refresh-secret',
-    { algorithm: 'HS256', expiresIn: '1m' }
-  )
+  //   const refreshToken = jwt.sign(
+  //   { id: foundUser.id },
+  //   process.env.REFRESH_SECRET || 'refresh-secret',
+  //   { algorithm: 'HS256', expiresIn: '1m' }
+  // )
 
-  await prisma.refreshToken.create({
-    data: {
-      token: refreshToken,
-      userId: foundUser.id,
-      expiresAt: new Date(Date.now() + 60 * 1000)
-    }
-  })
+  // await prisma.refreshToken.create({
+  //   data: {
+  //     token: refreshToken,
+  //     userId: foundUser.id,
+  //     expiresAt: new Date(Date.now() + 60 * 1000)
+  //   }
+  // })
 
   const { password: pw, createdAt, updatedAt, ...userData } = foundUser
 
-  return { accessToken, refreshToken, userData }
+  return { accessToken, userData }
 }
 
 export const getEmployeeBy = async (column, value) => {

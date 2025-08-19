@@ -8,16 +8,15 @@ const router = express.Router()
 
 router.post('/register', validate(registerSchema), authController.register)
 router.post('/login', validate(loginSchema), authController.login)
-router.get('/refresh', validate(loginSchema), authController.refresh)
+// router.get('/refresh', validate(loginSchema), authController.refresh)
 
-router.get('/testToken', authenticate, async (req, res, next) => {
-  try {
-    res.status(200).json({msg: 'ok'})
-  } catch (error) {
-    next(error)
-    
-  }
-})
+// router.get('/testToken', authenticate, async (req, res, next) => {
+//   try {
+//     res.status(200).json({msg: 'ok'})
+//   } catch (error) {
+//     next(error)
+//   }
+// })
 
 router.get('/me', authenticate, authController.getMe)
 router.patch('/me', authenticate, authController.updateMe)
