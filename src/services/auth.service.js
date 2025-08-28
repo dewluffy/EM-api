@@ -4,15 +4,7 @@ import prisma from '../config/prisma.config.js'
 import createError from '../utils/create-error.util.js'
 
 export async function registerService(data) {
-  const { email, firstName, lastName, password, confirmPassword } = data
-
-  if (!(email?.trim() && firstName?.trim() && lastName?.trim() && password?.trim() && confirmPassword?.trim())) {
-    createError(400, 'Please fill all required fields')
-  }
-
-  if (password !== confirmPassword) {
-    createError(400, 'Passwords do not match')
-  }
+  const { email, firstName, lastName, password } = data
 
   const emailTrimmed = email.trim()
 
@@ -55,21 +47,8 @@ export async function loginService(email, password) {
   const accessToken = jwt.sign(
     { id: foundUser.id },
     process.env.JWT_SECRET,
-    { algorithm: 'HS256', expiresIn: '15d' }
+    { algorithm: 'HS256', expiresIn: '2d' }
   )
-  //   const refreshToken = jwt.sign(
-  //   { id: foundUser.id },
-  //   process.env.REFRESH_SECRET || 'refresh-secret',
-  //   { algorithm: 'HS256', expiresIn: '1m' }
-  // )
-
-  // await prisma.refreshToken.create({
-  //   data: {
-  //     token: refreshToken,
-  //     userId: foundUser.id,
-  //     expiresAt: new Date(Date.now() + 60 * 1000)
-  //   }
-  // })
 
   const { password: pw, createdAt, updatedAt, ...userData } = foundUser
 
