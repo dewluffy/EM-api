@@ -43,7 +43,7 @@ enum LeaveStatus {
 
 model Attendance {
   id         Int       @id @default(autoincrement())
-  date       DateTime  @db.Date
+  date       String
   checkIn    DateTime?
   checkOut   DateTime?
   location   String?

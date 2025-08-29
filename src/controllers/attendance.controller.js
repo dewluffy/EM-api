@@ -5,25 +5,20 @@ import { getThaiNow, getThaiToday } from "../utils/time.util.js";
 export async function checkIn(req, res, next) {
   try {
     const employeeId = req.user.id;
-    const now = getThaiNow();
-    const today = getThaiToday();
+    const now = getThaiNow();      // JS Date
+    const today = getThaiToday();  // YYYY-MM-DD string
 
-    let attendance = await attendanceService.findTodayAttendance(
-      employeeId,
-      today
-    );
+    let attendance = await attendanceService.findTodayAttendance(employeeId, today);
+
     if (!attendance) {
-      attendance = await attendanceService.createEmptyAttendance(
-        employeeId,
-        today
-      );
+      attendance = await attendanceService.createEmptyAttendance(employeeId, today);
     }
 
     if (attendance.checkIn)
       throw createError(400, "You have already checked in today");
 
-    const lateThreshold = new Date(today);
-    lateThreshold.setHours(9, 0, 0, 0);
+    const lateThreshold = new Date();
+    lateThreshold.setHours(8, 0, 0, 0);
 
     const updated = await attendanceService.updateCheckIn(
       attendance.id,

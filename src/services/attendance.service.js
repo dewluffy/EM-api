@@ -1,48 +1,48 @@
 import prisma from '../config/prisma.config.js'
+import { getThaiToday } from "../utils/time.util.js";
 
-export const findTodayAttendance = (employeeId, today) => {
-  const startOfDay = new Date(today)
-  startOfDay.setHours(0, 0, 0, 0)
-
-  const endOfDay = new Date(today)
-  endOfDay.setHours(23, 59, 59, 999)
-
-  return prisma.attendance.findFirst({
+// ✅ หาวันนี้ของ employee
+export const findTodayAttendance = (employeeId, today = getThaiToday()) => {
+  return prisma.attendance.findUnique({
     where: {
+      employeeId_date: {
+        employeeId,
+        date: today, // YYYY-MM-DD string
+      },
+    },
+  });
+};
+
+
+// ✅ สร้าง empty attendance ของวันนี้
+export const createEmptyAttendance = (employeeId, today = getThaiToday()) => {
+  return prisma.attendance.create({
+    data: {
       employeeId,
-      date: {
-        gte: startOfDay,
-        lte: endOfDay,
-      }
-    }
-  })
-}
+      date: today, // YYYY-MM-DD
+      checkIn: null,
+      checkOut: null,
+      isLate: false,
+      location: null,
+    },
+  });
+};
 
-
-export const createEmptyAttendance = (employeeId, date) => {
-  const startOfDay = new Date(date)
-  startOfDay.setHours(0, 0, 0, 0)
-
-  return prisma.attendance.upsert({
-    where: { employeeId_date: { employeeId, date: startOfDay } },
-    create: { employeeId, date: startOfDay },
-    update: {}, // ไม่อัพเดตอะไร ถ้ามีแล้ว
-  })
-}
-
+// ✅ update check-in
 export const updateCheckIn = (id, checkIn, isLate, location) => {
   return prisma.attendance.update({
     where: { id },
-    data: { checkIn, isLate, location }
-  })
-}
+    data: { checkIn, isLate, location },
+  });
+};
 
-export const updateCheckOut = (id, checkOut) => {
+// ✅ update check-out
+export const updateCheckOut = (id, checkOut, location) => {
   return prisma.attendance.update({
     where: { id },
-    data: { checkOut }
-  })
-}
+    data: { checkOut, location },
+  });
+};
 
 export const getAttendanceByEmployeeId = (employeeId) => {
   return prisma.attendance.findMany({

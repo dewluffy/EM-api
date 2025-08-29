@@ -6,6 +6,7 @@ import adminRouter from './routes/admin.route.js'
 import holidayRouter from './routes/holiday.route.js'
 import attendanceRouter from './routes/attendance.route.js'
 import leaveRouter from './routes/leave.route.js'
+import leaveTypeRouter from './routes/leaveType.route.js'
 import { createDailyAttendance } from './scripts/createDailyAttendance.js'
 import cors from 'cors'
 
@@ -24,6 +25,7 @@ app.use('/api/admin', adminRouter)
 app.use('/api/attendance', attendanceRouter)
 app.use('/api/holiday', holidayRouter)
 app.use('/api/leave', leaveRouter)
+app.use('/api/leave-types', leaveTypeRouter)
 app.get('/dev/run-attendance', async (req, res) => {
   await createDailyAttendance()
   res.send('Manual run ok')

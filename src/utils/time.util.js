@@ -8,10 +8,11 @@ dayjs.extend(timezone)
 const TH_TIMEZONE = 'Asia/Bangkok'
 
 export function getThaiToday() {
-  return dayjs().tz(TH_TIMEZONE).startOf('day').format('YYYY-MM-DD HH:mm:ss')
+  return dayjs().tz(TH_TIMEZONE).format('YYYY-MM-DD')
   // return dayjs().tz(TH_TIMEZONE).startOf('day').format('DD-MM-YYYY')
 }
 
 export function getThaiNow() {
-  return  dayjs().tz(TH_TIMEZONE).format('YYYY-MM-DD HH:mm:ss')
+  return  dayjs().tz(TH_TIMEZONE).toDate()
+  // return  dayjs().tz(TH_TIMEZONE).format('YYYY-MM-DD HH:mm:ss')
 }
