@@ -8,7 +8,7 @@ export const getAllLeaveTypes = async () => {
     })
   } catch (error) {
     console.error('Error fetching leave types:', error)
-    createErrorUtil(500, 'Cannot fetch leave types')
+    createError(500, 'Cannot fetch leave types')
   }
 }
 
