@@ -7,8 +7,8 @@ const router = express.Router()
 
 
 router.get('/', authenticate , holidayController.getHolidays)
-router.post('/admin', authenticateAdmin , holidayController.addHoliday)
-router.patch('/admin/:id', authenticateAdmin , holidayController.editHoliday)
-router.delete('/admin/:id', authenticateAdmin , holidayController.removeHoliday)
+router.post('/', authenticateAdmin , holidayController.addHoliday)
+router.patch('/:id', authenticateAdmin , holidayController.editHoliday)
+router.delete('/:id', authenticateAdmin , holidayController.removeHoliday)
 
 export default router

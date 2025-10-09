@@ -7,12 +7,15 @@ const router = express.Router()
 
 router.use(authenticate)
 
+router.get('/balance/me', leaveController.getMyLeaveBalances)
+
 // USER + ADMIN
 router.get('/', leaveController.getAllLeaves)
 router.get('/:id', leaveController.getLeaveById)
 router.post('/', leaveController.createLeave)
 router.patch('/:id', leaveController.updateLeave)
 router.delete('/:id', leaveController.deleteLeave)
+
 
 // ADMIN ONLY
 router.get('/pending', authenticateAdmin, leaveController.getPendingLeaves)

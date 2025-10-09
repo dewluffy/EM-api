@@ -49,7 +49,7 @@ export async function getRejectedLeaves(req, res, next) {
 
 export async function createLeave(req, res, next) {
   try {
-    const { leaveTypeId, startDate, endDate, status } = req.body
+    const { leaveTypeId, startDate, endDate, reason } = req.body
 
     // ตรวจสอบ leaveTypeId
     if (!leaveTypeId) {
@@ -73,7 +73,7 @@ export async function createLeave(req, res, next) {
       leaveTypeId,
       startDate: dayjs(startDate).toDate(),
       endDate: dayjs(endDate).toDate(),
-      status: status || 'pending',
+      reason: reason,
       employeeId: req.user.id
     }
 
@@ -122,23 +122,14 @@ export async function updateLeave(req, res, next) {
 export async function approveLeave(req, res, next) {
   try {
     const id = +req.params.id
-    const approver = req.user
+    const approverId = req.user.id
 
-    // หา leave
-    const leave = await prisma.leave.findUnique({
-      where: { id },
-    })
+    const leave = await leaveService.getLeaveById(id)
     if (!leave) return next(createError(404, "Leave not found"))
-
-    // เช็คว่ายัง pending อยู่
-    if (leave.status !== "pending") {
-      return next(createError(400, "Leave is already processed"))
-    }
-
-    const updated = await leaveService.updateLeave(id, {
-      status: "approved",
-      approvedBy: approver.id,
-    })
+    if (leave.status !== "pending") return next(createError(400, "Leave is already processed"))
+    
+    // เรียกใช้ service ที่ถูกต้อง
+    const updated = await leaveService.approveLeave(id, approverId)
     res.json({ message: "Leave approved", leave: updated })
   } catch (err) {
     next(err)
@@ -148,25 +139,14 @@ export async function approveLeave(req, res, next) {
 export async function rejectLeave(req, res, next) {
   try {
     const id = +req.params.id
-    const approver = req.user
-    const { rejectReason } = req.body
+    const approverId = req.user.id
 
-    // หา leave
-    const leave = await prisma.leave.findUnique({
-      where: { id },
-    })
+    const leave = await leaveService.getLeaveById(id)
     if (!leave) return next(createError(404, "Leave not found"))
-
-    // เช็คว่ายัง pending อยู่
-    if (leave.status !== "pending") {
-      return next(createError(400, "Leave is already processed"))
-    }
-
-    const updated = await leaveService.updateLeave(id, {
-      status: "rejected",
-      approvedBy: approver.id,
-      rejectReason: rejectReason || "No reason provided",
-    })
+    if (leave.status !== "pending") return next(createError(400, "Leave is already processed"))
+    
+    // เรียกใช้ service ที่ถูกต้อง
+    const updated = await leaveService.rejectLeave(id, approverId)
     res.json({ message: "Leave rejected", leave: updated })
   } catch (err) {
     next(err)
@@ -183,5 +163,14 @@ export async function deleteLeave(req, res, next) {
     res.json({ message: 'Leave deleted' })
   } catch (err) {
     next(err)
+  }
+}
+
+export async function getMyLeaveBalances(req, res, next) {
+  try {
+    const balances = await leaveService.getLeaveBalancesByEmployeeId(req.user.id);
+    res.json({ balances });
+  } catch (err) {
+    next(err);
   }
 }

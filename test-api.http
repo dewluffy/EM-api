@@ -3,7 +3,7 @@ GET http://localhost:8899/api/auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjU0OTEzLCJleHAiOjE3NTM5NTA5MTN9.teq5kVEMnomfftsOWg7J0nQMF5CUQtcyBuK-heaatKI
 ###
 PATCH  http://localhost:8899/api/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzUyNjU0OTEzLCJleHAiOjE3NTM5NTA5MTN9.teq5kVEMnomfftsOWg7J0nQMF5CUQtcyBuK-heaatKI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzYwMDAxNTYxLCJleHAiOjE3NjAxNzQzNjF9.gWdT5R8iAL0aHUHlxGqfeCWbcOApHy7QG1B0yZk7Dcs
 
 {
   "firstName": "Monkey",
@@ -17,8 +17,8 @@ POST http://localhost:8899/api/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "dew@river.com",
- "password" : "123456"
+ "email" : "admin@river.com",
+ "password" : "dew123456"
 }
 
 ###
@@ -26,11 +26,11 @@ POST http://localhost:8899/api/auth/register HTTP/1.1
 content-type: application/json
 
 {
- "email" : "dew3@river.com",
- "firstName" : "dew3",
+ "email" : "admin@river.com",
+ "firstName" : "dew",
  "lastName" : "river",
- "password" : "123456",
- "confirmPassword" : "123456"
+ "password" : "dew123456",
+ "confirmPassword" : "dew123456"
 }
 
 ###

@@ -63,3 +63,41 @@ export const deleteAttendanceById = (id) => {
     where: { id }
   })
 }
+
+export const getTodaysAttendance = (today = getThaiToday()) => {
+  return prisma.attendance.findMany({
+    where: {
+      date: today,
+      checkIn: {
+        not: null // นับเฉพาะคนที่มีการ check-in แล้ว
+      }
+    },
+  });
+};
+
+export const getAllAttendanceRecords = (filters = {}) => {
+  const where = {};
+  
+  if (filters.year && filters.month) {
+    const monthString = String(filters.month).padStart(2, '0');
+    const datePrefix = `${filters.year}-${monthString}`;
+    where.date = {
+      startsWith: datePrefix,
+    };
+  }
+
+  return prisma.attendance.findMany({
+    where,
+    include: {
+      employee: { 
+        select: {
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+    orderBy: {
+      date: 'desc',
+    },
+  });
+};

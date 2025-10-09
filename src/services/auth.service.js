@@ -4,29 +4,53 @@ import prisma from '../config/prisma.config.js'
 import createError from '../utils/create-error.util.js'
 
 export async function registerService(data) {
-  const { email, firstName, lastName, password } = data
-
-  const emailTrimmed = email.trim()
+  const { email, firstName, lastName, password } = data;
+  const emailTrimmed = email.trim();
 
   const foundUser = await prisma.employee.findUnique({
-    where: { email: emailTrimmed }
-  })
+    where: { email: emailTrimmed },
+  });
 
   if (foundUser) {
-    createError(409, `Email ${emailTrimmed} is already registered`)
+    createError(409, `Email ${emailTrimmed} is already registered`);
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10)
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = {
-    email: emailTrimmed,
-    password: hashedPassword,
-    firstName: firstName,
-    lastName: lastName
-  }
+  // --- จุดแก้ไขสำคัญ ---
+  // ใช้ Prisma Transaction เพื่อให้แน่ใจว่าทุกอย่างสำเร็จพร้อมกัน
+  const newEmployee = await prisma.$transaction(async (tx) => {
+    // 1. สร้างพนักงานใหม่
+    const employee = await tx.employee.create({
+      data: {
+        email: emailTrimmed,
+        password: hashedPassword,
+        firstName: firstName,
+        lastName: lastName,
+      },
+    });
 
-  return await prisma.employee.create({ data: newUser })
+    // 2. ค้นหาประเภทการลาทั้งหมดที่มีในระบบ
+    const allLeaveTypes = await tx.leaveType.findMany();
+
+    // 3. สร้าง LeaveBalance เริ่มต้นสำหรับวันลาทุกประเภท
+    if (allLeaveTypes.length > 0) {
+      const leaveBalanceData = allLeaveTypes.map((type) => ({
+        employeeId: employee.id,
+        leaveTypeId: type.id,
+        usedDays: 0, // เริ่มต้นที่ 0
+      }));
+      await tx.leaveBalance.createMany({
+        data: leaveBalanceData,
+      });
+    }
+
+    return employee;
+  });
+
+  return newEmployee;
 }
+
 
 export async function loginService(email, password) {
   const emailTrimmed = email.trim().toLowerCase()

@@ -120,3 +120,65 @@ export async function deleteAttendanceById(req, res, next) {
     next(err);
   }
 }
+
+export async function getTodaysAttendanceCount(req, res, next) {
+  try {
+    const today = getThaiToday();
+    const records = await attendanceService.getTodaysAttendance(today);
+    // ส่งกลับไปแค่จำนวน
+    res.json({ count: records.length });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getAttendanceReport(req, res, next) {
+  try {
+    const { year, month, raw } = req.query;
+    const filters = { year, month };
+    
+    const allRecords = await attendanceService.getAllAttendanceRecords(filters);
+
+      if (raw === 'true') {
+      return res.json({ records: allRecords });
+    }
+    
+    // ประมวลผลข้อมูลเพื่อสร้าง Summary
+    const summary = allRecords.reduce((acc, record) => {
+      const { employeeId, employee, isLate, checkIn } = record;
+      
+      // ถ้ายังไม่มี employee คนนี้ใน accumulator ให้สร้าง object เริ่มต้น
+      if (!acc[employeeId]) {
+        acc[employeeId] = {
+          employeeId,
+          name: `${employee.firstName} ${employee.lastName}`,
+          onTime: 0,
+          late: 0,
+          absent: 0,
+          total: 0,
+        };
+      }
+
+      // นับจำนวน
+      acc[employeeId].total++;
+      if (checkIn) {
+        if (isLate) {
+          acc[employeeId].late++;
+        } else {
+          acc[employeeId].onTime++;
+        }
+      } else {
+        acc[employeeId].absent++;
+      }
+      
+      return acc;
+    }, {});
+
+    // แปลง Object กลับเป็น Array เพื่อให้ง่ายต่อการใช้งานใน Frontend
+    const reportData = Object.values(summary);
+
+    res.json({ records: reportData }); // ส่งข้อมูลสรุปกลับไป
+  } catch (err) {
+    next(err);
+  }
+}
