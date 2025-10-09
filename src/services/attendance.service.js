@@ -69,7 +69,10 @@ export const getTodaysAttendance = (today = getThaiToday()) => {
     where: {
       date: today,
       checkIn: {
-        not: null // นับเฉพาะคนที่มีการ check-in แล้ว
+        not: null
+      },
+      employee: {
+        role: 'USER'
       }
     },
   });
